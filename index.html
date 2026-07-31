@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ellur — Offline Accounting Software for Indian Businesses</title>
+<meta name="description" content="Desktop ERP with invoicing, GST, inventory, and financial reports. Works 100% offline. Import from Tally. Starting at ₹2,999/year.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a2e; line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header { background: linear-gradient(135deg, #0f3460, #16213e); color: white; padding: 20px 0; position: sticky; top: 0; z-index: 100; }
+  header .container { display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: #e94560; }
+  nav a { color: rgba(255,255,255,0.85); text-decoration: none; margin-left: 32px; font-size: 14px; font-weight: 500; }
+  nav a:hover { color: white; }
+
+  /* Hero */
+  .hero { background: linear-gradient(135deg, #0f3460, #16213e); color: white; padding: 80px 0 100px; text-align: center; }
+  .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+  .hero h1 span { color: #e94560; }
+  .hero p { font-size: 20px; color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto 36px; }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: #e94560; color: white; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px; border: none; cursor: pointer; }
+  .btn-primary:hover { background: #d63851; }
+  .btn-secondary { background: transparent; color: white; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px; border: 2px solid rgba(255,255,255,0.3); }
+  .btn-secondary:hover { border-color: white; }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 6px 16px; border-radius: 20px; font-size: 13px; margin-bottom: 24px; }
+
+  /* Sections */
+  section { padding: 80px 0; }
+  .section-title { font-size: 32px; font-weight: 800; text-align: center; margin-bottom: 12px; }
+  .section-sub { text-align: center; color: #666; font-size: 16px; margin-bottom: 48px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+  /* Features Grid */
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .feature { padding: 32px; border-radius: 12px; border: 1px solid #eee; }
+  .feature-icon { font-size: 36px; margin-bottom: 12px; }
+  .feature h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .feature p { font-size: 14px; color: #666; }
+
+  /* How it works */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
+  .step-num { width: 48px; height: 48px; background: #e94560; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; margin-bottom: 16px; }
+  .step h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .step p { font-size: 14px; color: #666; }
+  .download-card { display: block; border: 2px solid #eee; border-radius: 12px; padding: 24px; transition: border-color 0.2s, box-shadow 0.2s; }
+  .download-card:hover { border-color: #e94560; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .download-size { display: inline-block; margin-top: 12px; background: #f8f9fa; border-radius: 20px; padding: 4px 14px; font-size: 13px; color: #0f3460; font-weight: 700; }
+
+  /* Download modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(10,15,30,0.65); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 16px; max-width: 760px; width: 100%; padding: 40px; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .modal h2 { font-size: 26px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+  .modal-sub { text-align: center; color: #666; font-size: 14px; margin-bottom: 28px; }
+  .modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; font-size: 30px; color: #999; cursor: pointer; line-height: 1; }
+  .modal-close:hover { color: #e94560; }
+  .modal-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .modal-option { border: 2px solid #eee; border-radius: 12px; padding: 24px 16px; text-align: center; transition: border-color 0.2s; }
+  .modal-option.detected { border-color: #e94560; background: #fff5f6; }
+  .modal-icon { font-size: 34px; margin-bottom: 8px; }
+  .modal-name { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+  .modal-meta { font-size: 12px; color: #888; margin-bottom: 16px; min-height: 32px; }
+  .modal-download { display: block; background: #0f3460; color: #fff; text-decoration: none; padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 700; }
+  .modal-download:hover { background: #e94560; }
+  .modal-note { text-align: center; color: #999; font-size: 12px; margin-top: 24px; }
+  @media (max-width: 768px) {
+    .modal-options { grid-template-columns: 1fr; }
+  }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .price-card { border: 2px solid #eee; border-radius: 12px; padding: 32px; text-align: center; position: relative; }
+  .price-card.featured { border-color: #e94560; }
+  .price-card.featured::before { content: 'MOST POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #e94560; color: white; padding: 4px 16px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .price-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .price { font-size: 40px; font-weight: 800; color: #0f3460; }
+  .price span { font-size: 16px; font-weight: 400; color: #666; }
+  .price-features { list-style: none; margin: 24px 0; text-align: left; }
+  .price-features li { padding: 8px 0; font-size: 14px; border-bottom: 1px solid #f5f5f5; }
+  .price-features li::before { content: '✓ '; color: #27ae60; font-weight: 700; }
+  .price-btn { display: block; width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #0f3460; background: transparent; color: #0f3460; font-weight: 700; font-size: 14px; cursor: pointer; text-decoration: none; text-align: center; }
+  .price-btn.filled { background: #e94560; color: white; border-color: #e94560; }
+
+  /* FAQ */
+  .faq { max-width: 700px; margin: 0 auto; }
+  .faq-item { border-bottom: 1px solid #eee; padding: 20px 0; }
+  .faq-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .faq-item p { font-size: 14px; color: #666; }
+
+  /* Footer */
+  footer { background: #16213e; color: rgba(255,255,255,0.7); padding: 40px 0; text-align: center; font-size: 14px; }
+  footer a { color: rgba(255,255,255,0.9); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .features, .pricing-grid, .steps { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+    nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="logo">Ellur<span>ERP</span></div>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="mailto:support@hybriderp.com">Support</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Made for Indian businesses</div>
+    <h1>Accounting that works<br><span>100% offline</span></h1>
+    <p>Invoicing, GST reports, inventory, and financial statements — all on your desktop. No internet needed. No data leaves your computer. Import from Tally in one click.</p>
+    <div class="hero-buttons">
+      <a href="#" id="download-btn" class="btn-primary" onclick="openDownloadModal(event)">⬇ Download for PC</a>
+      <a href="#features" class="btn-secondary">See Features</a>
+    </div>
+    <p style="margin-top:16px;font-size:13px;color:rgba(255,255,255,0.6);">Free 30-day trial · No credit card · Works offline</p>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <div class="section-title">Everything your business needs</div>
+    <div class="section-sub">Built from the ground up for Indian GST compliance, small business workflows, and complete data privacy.</div>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">📋</div>
+        <h3>GST Invoicing</h3>
+        <p>Create CGST/SGST and IGST invoices with auto-calculated tax. Generate GSTR-1, GSTR-3B, and HSN summary reports instantly.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📦</div>
+        <h3>Inventory Management</h3>
+        <p>Track stock with FIFO/weighted average valuation. Multi-warehouse support, stock movements, and low-stock alerts.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📊</div>
+        <h3>Financial Reports</h3>
+        <p>Profit & Loss, Balance Sheet, Trial Balance, Day Book, Ledger Statements, and Aging Reports — all with one click.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💰</div>
+        <h3>Payments & Receipts</h3>
+        <p>Record payments, receipts, credit notes, debit notes, and contra entries. Bank reconciliation included.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>100% Offline & Private</h3>
+        <p>No cloud. No subscriptions phoning home. Your data stays on YOUR computer. Backup with AES-256 encryption.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔄</div>
+        <h3>Import from Tally</h3>
+        <p>Migrate your ledgers, stock items, and parties from Tally in one click. Opening balances come along automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" style="background:#f8f9fa;">
+  <div class="container">
+    <div class="section-title">Up and running in 3 steps</div>
+    <div class="section-sub">No server setup. No IT team needed. Install PostgreSQL, install the app, start billing.</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Install</h3>
+        <p>Download the installer for Windows, Mac, or Linux. Install PostgreSQL (we'll guide you). Run the app.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Setup</h3>
+        <p>Enter your company details, GSTIN, and state. Import your data from Tally or CSV, or start fresh.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Billing</h3>
+        <p>Create invoices, receive payments, track inventory, and generate GST reports — all offline, all private.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="container">
+    <div class="section-title">Download for PC</div>
+    <div class="section-sub">Works on Windows 10+, macOS 12+, and Linux. Your data stays on your computer.</div>
+    <div class="steps" style="max-width:900px;margin:0 auto;">
+      <a href="#" class="download-card" data-os="win" style="text-decoration:none;color:inherit;">
+        <div class="step">
+          <div class="step-num">🪟</div>
+          <h3>Windows</h3>
+          <p>Hybrid ERP-1.0.0-win-x64.exe — NSIS installer with desktop shortcut.</p>
+          <div class="download-size" data-size="win">~123 MB</div>
+        </div>
+      </a>
+      <a href="#" class="download-card" data-os="mac" style="text-decoration:none;color:inherit;">
+        <div class="step">
+          <div class="step-num">🍎</div>
+          <h3>macOS</h3>
+          <p>DMG installer for Intel and Apple Silicon Macs.</p>
+          <div class="download-size" data-size="mac">~120 MB</div>
+        </div>
+      </a>
+      <a href="#" class="download-card" data-os="linux" style="text-decoration:none;color:inherit;">
+        <div class="step">
+          <div class="step-num">🐧</div>
+          <h3>Linux</h3>
+          <p>AppImage — no installation, just run. Ubuntu/Debian recommended.</p>
+          <div class="download-size" data-size="linux">~110 MB</div>
+        </div>
+      </a>
+    </div>
+    <p style="text-align:center;color:#666;font-size:14px;margin-top:16px;">Need PostgreSQL? We'll guide you through it on first launch.</p>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="container">
+    <div class="section-title">Simple, honest pricing</div>
+    <div class="section-sub">No hidden fees. No per-user charges. No data lock-in. You own the software.</div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Starter</h3>
+        <div class="price">₹2,999<span>/year</span></div>
+        <ul class="price-features">
+          <li>1 company, 2 users</li>
+          <li>All invoicing features</li>
+          <li>GST reports (GSTR-1, 3B)</li>
+          <li>Inventory management</li>
+          <li>Financial reports</li>
+          <li>Email support</li>
+          <li>1 year of updates</li>
+        </ul>
+        <a href="mailto:support@hybriderp.com?subject=Starter Plan" class="price-btn">Get Started</a>
+      </div>
+      <div class="price-card featured">
+        <h3>Business</h3>
+        <div class="price">₹5,999<span>/year</span></div>
+        <ul class="price-features">
+          <li>Unlimited companies, 5 users</li>
+          <li>Everything in Starter</li>
+          <li>Multi-warehouse inventory</li>
+          <li>Bank reconciliation</li>
+          <li>Backup & restore (encrypted)</li>
+          <li>Tally import tool</li>
+          <li>WhatsApp + email support</li>
+          <li>Priority updates</li>
+        </ul>
+        <a href="mailto:support@hybriderp.com?subject=Business Plan" class="price-btn filled">Get Business</a>
+      </div>
+      <div class="price-card">
+        <h3>Enterprise</h3>
+        <div class="price">₹12,999<span>/year</span></div>
+        <ul class="price-features">
+          <li>Unlimited everything</li>
+          <li>Everything in Business</li>
+          <li>Custom COA setup</li>
+          <li>Data migration assistance</li>
+          <li>Phone support</li>
+          <li>On-site training (optional)</li>
+          <li>White-label available</li>
+        </ul>
+        <a href="mailto:support@hybriderp.com?subject=Enterprise Plan" class="price-btn">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="background:#f8f9fa;">
+  <div class="container">
+    <div class="section-title">Frequently asked questions</div>
+    <div class="faq">
+      <div class="faq-item">
+        <h4>Do I need internet to use it?</h4>
+        <p>No. Ellur works 100% offline. Internet is only needed for initial installation and optional updates.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is my data safe?</h4>
+        <p>Yes. Your data never leaves your computer. Backups are encrypted with AES-256 military-grade encryption. No cloud, no servers, no data collection.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I import from Tally?</h4>
+        <p>Yes. Export your masters from Tally as XML, and import them in one click. Ledgers, stock items, parties, and opening balances transfer automatically.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What databases are supported?</h4>
+        <p>PostgreSQL (recommended). We provide a one-click installer guide. It's free and open source.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What OS is supported?</h4>
+        <p>Windows 10+, macOS 12+, and Ubuntu/Debian Linux. Installers are provided for all three.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Can I try before I buy?</h4>
+        <p>Yes. The app includes a 30-day free trial with full features. No credit card required.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What if I need help?</h4>
+        <p>Email support for all plans. WhatsApp and phone support for Business and Enterprise. We also provide installation assistance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:60px 0;text-align:center;">
+  <div class="container">
+    <h2 style="font-size:28px;font-weight:800;margin-bottom:16px;">Ready to take control of your accounts?</h2>
+    <p style="color:#666;margin-bottom:32px;">Start your 30-day free trial. No credit card. No internet required.</p>
+    <a href="mailto:support@hybriderp.com?subject=Free Trial" class="btn-primary">Start Free Trial</a>
+  </div>
+</section>
+
+<div id="download-modal" class="modal-overlay" onclick="if(event.target===this)closeDownloadModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeDownloadModal()" aria-label="Close">&times;</button>
+    <h2>Choose your operating system</h2>
+    <p class="modal-sub">We've detected your OS — it's highlighted below.</p>
+    <div class="modal-options">
+      <div class="modal-option" data-os="win">
+        <div class="modal-icon">🪟</div>
+        <div class="modal-name">Windows</div>
+        <div class="modal-meta">Windows 10 / 11 · 64-bit</div>
+        <a href="#" class="modal-download" onclick="startDownload(event, 'win')">Download for Windows</a>
+      </div>
+      <div class="modal-option" data-os="mac">
+        <div class="modal-icon">🍎</div>
+        <div class="modal-name">macOS</div>
+        <div class="modal-meta">macOS 12+ · Intel & Apple Silicon</div>
+        <a href="#" class="modal-download" onclick="startDownload(event, 'mac')">Download for macOS</a>
+      </div>
+      <div class="modal-option" data-os="linux">
+        <div class="modal-icon">🐧</div>
+        <div class="modal-name">Linux</div>
+        <div class="modal-meta">Ubuntu / Debian · 64-bit</div>
+        <a href="#" class="modal-download" onclick="startDownload(event, 'linux')">Download for Linux</a>
+      </div>
+    </div>
+    <p class="modal-note">Free 30-day trial · No credit card · Your data stays on your computer</p>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <p style="margin-bottom:8px;"><strong>Ellur</strong> — Offline accounting for Indian businesses</p>
+    <p>
+      <a href="mailto:support@hybriderp.com">support@hybriderp.com</a> ·
+      <a href="https://wa.me/91XXXXXXXXXX">WhatsApp Support</a>
+    </p>
+    <p style="margin-top:16px;font-size:12px;color:rgba(255,255,255,0.4);">© 2026 Ellur. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+  const REPO = "https://github.com/sanjayellur02/-ellur-website/releases/latest/download";
+  const ASSETS = {
+    win:   REPO + "/Hybrid%20ERP-1.0.0-win-x64.exe",
+    mac:   REPO + "/Hybrid%20ERP-1.0.0-mac-arm64.dmg",
+    linux: REPO + "/Hybrid%20ERP-1.0.0-linux-x86_64.AppImage",
+  };
+  const detectOS = () => {
+    const ua = navigator.userAgent;
+    if (/Windows/i.test(ua)) return "win";
+    if (/Macintosh|Mac OS X/i.test(ua)) return "mac";
+    if (/Linux/i.test(ua)) return "linux";
+    return "win";
+  };
+
+  const openDownloadModal = (e) => {
+    if (e) e.preventDefault();
+    const os = detectOS();
+    document.querySelectorAll(".modal-option").forEach(opt => {
+      opt.classList.toggle("detected", opt.dataset.os === os);
+    });
+    document.getElementById("download-modal").classList.add("open");
+  };
+  const closeDownloadModal = () => {
+    document.getElementById("download-modal").classList.remove("open");
+  };
+  const startDownload = (e, os) => {
+    if (e) e.preventDefault();
+    const link = document.createElement("a");
+    link.href = ASSETS[os];
+    link.setAttribute("download", "");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    closeDownloadModal();
+  };
+
+  document.querySelectorAll(".download-card").forEach(card => {
+    card.href = ASSETS[card.dataset.os];
+    card.setAttribute("download", "");
+  });
+</script>
+</body>
+</html>
